@@ -3,7 +3,14 @@ local isOpen = false
 -- Functions
 
 local function toggleOpen()
-
+    isOpen = not isOpen
+    SendNUIMessage({
+        action = 'phone:visible',
+        data = {
+            visible = isOpen
+        }
+    })
+    SetNuiFocus(isOpen, isOpen)
 end
 exports("toggleOpen", toggleOpen)
 
@@ -55,3 +62,11 @@ end)
 
 
 -- Events
+
+RegisterNetEvent('phone:open', function()
+    toggleOpen()
+end)
+
+RegisterNetEvent('phone:close', function()
+    toggleOpen()
+end)

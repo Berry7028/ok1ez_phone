@@ -2,12 +2,14 @@
   import { Search } from "lucide-svelte";
   import { ScrollArea } from "@/components/ui/scroll-area";
   import { onMount } from "svelte";
-  import { SendEvent } from "@/utils/eventsHandlers";
+  import { fetchNui } from "@/utils/eventsHandlers";
+  import { writable } from "svelte/store";
 
-  let contacts = $state([]);
+  let contacts = writable([]);
 
   onMount(async () => {
-    contacts = await SendEvent("phone:fetchContacts", {});
+    const fetchedContacts = await fetchNui("phone:fetchContacts", {});
+    contacts.set(fetchedContacts);
   });
 </script>
 
@@ -27,8 +29,8 @@
 </header>
 
 <ScrollArea class="flex flex-col w-full h-full max-h-[49.5rem] overflow-y-auto">
-  {#if contacts}
-    {#each contacts as contact}
+  {#if $contacts}
+    {#each $contacts as contact}
       <div
         class="flex items-center justify-between w-full px-6 border-b h-14 hover:bg-secondary/70 dark:hover:bg-secondary/20 hover:cursor-pointer"
       >

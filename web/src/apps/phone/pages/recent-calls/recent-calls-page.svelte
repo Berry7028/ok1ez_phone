@@ -2,12 +2,14 @@
   import { InfoIcon } from "lucide-svelte";
   import { ScrollArea } from "@/components/ui/scroll-area";
   import { onMount } from "svelte";
-  import { SendEvent } from "@/utils/eventsHandlers";
+  import { fetchNui } from "@/utils/eventsHandlers";
+  import { writable } from "svelte/store";
 
-  let recentCalls = $state([]);
+  let recentCalls = writable([]);
 
   onMount(async () => {
-    recentCalls = await SendEvent("phone:fetchRecents", {});
+    const fetchedRecentCalls = await fetchNui("phone:fetchRecents", {});
+    recentCalls.set(fetchedRecentCalls);
   });
 </script>
 
@@ -16,7 +18,7 @@
 </header>
 
 <ScrollArea class="flex flex-col w-full h-full max-h-[49.5rem] overflow-y-auto">
-  {#each recentCalls as call}
+  {#each $recentCalls as call}
     <div
       class="flex items-center justify-between w-full px-6 border-b h-14 hover:bg-secondary/70 dark:hover:bg-secondary/20 hover:cursor-pointer"
     >

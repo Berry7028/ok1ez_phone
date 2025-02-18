@@ -153,3 +153,28 @@ export async function DebugEventCallback<T>(action: string, data?: T) {
   const result = await handler(data);
   return result;
 }
+
+/**
+ * Fetch data from the NUI
+ * @param eventName The name of the event to fetch
+ * @param data The data to send with the event
+ * @returns {Promise<T>} The callback response from the NUI
+ **/
+export async function fetchNui<T = any, P = any>(
+  eventName: string,
+  data: T = {} as T,
+): Promise<P> {
+  const options = {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: JSON.stringify(data),
+  };
+
+  const resp: Response = await fetch(
+    `https://${get(RESOURCE_NAME)}/${eventName}`,
+    options,
+  );
+  return await resp.json();
+}
